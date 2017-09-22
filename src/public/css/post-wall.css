@@ -1,0 +1,90 @@
+body {
+  font-family: 'Quantico', sans-serif;
+  background: #94d0e8;
+  color: #323232; }
+
+h1 {
+  font-family: 'Quantico', sans-serif;
+  text-align: center;
+  color: #194759; }
+
+.headerText {
+  color: #969696;
+  margin-top: 15px; }
+
+#fridge {
+  border-radius: 25px;
+  padding: 15px; }
+
+p {
+  background: #fafafa; }
+
+#magnets {
+  text-align: center;
+  margin-left: 40px; }
+
+button {
+  border-radius: 25px; }
+
+#screenArea {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  z-index: 1;
+  background-color: rgba(20, 20, 20, 0.8); }
+
+.addEditFormInput {
+  width: 100%;
+  margin-bottom: 20px; }
+
+#addEditForm {
+  background: #b2ab01;
+  margin: auto;
+  width: 300px;
+  margin-top: 100px;
+  padding: 20px;
+  border-radius: 20px; }
+
+#close {
+  width: 40px;
+  margin-left: 220px;
+  cursor: pointer; }
+
+#editNote {
+  margin-top: 15px;
+  color: white; }
+
+#submitButton {
+  margin-top: 15px; }
+
+.message {
+  visibility: hidden;
+  color: white; }
+
+.magnet, .stamp {
+  background: #fafafa;
+  padding: 15px;
+  width: 240px;
+  border: solid #94d0e8 5px;
+  border-radius: 25px; }
+
+span {
+  padding: 0px 10px 0px 0px; }
+
+img {
+  width: 200px;
+  border-radius: 5px; }
+
+#mainImg {
+  width: 100%;
+  margin-bottom: 20px; }
+
+.fa-thumbs-o-up:hover, .fa-thumbs-o-down:hover {
+  cursor: pointer;
+  color: #ff1942; }
+
+.sentimentMessage {
+  visibility: hidden;
+  color: #ff1942; }

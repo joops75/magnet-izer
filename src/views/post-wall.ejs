@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Magnet-izer</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Quantico" rel="stylesheet">
+    <link href="/public/css/post-wall.css" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://masonry.desandro.com/masonry.pkgd.js"></script>
+    <script src="https://rawgithub.com/desandro/classie/master/classie.js"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand active" href="/">Magnet-izer</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav">
+            <% if (user && page !== '/my-post-wall') { %>
+              <li><a href="/my-post-wall">My Magnets</a></li>
+            <% } %>
+            <% if (page !== '/all-post-wall') { %>
+              <li><a href="/all-post-wall">All Magnets</a></li>
+            <% } %>
+            <% if (user) { %>
+            <li><a href="/profile">Profile</a></li>
+            <% } %>
+            <% if (user && user[1] === 'local') { %>
+              <li><a href="/password">Change Password</a></li>
+            <% } %>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <% if (user) { %>
+              <li><div class="headerText">Welcome <%= user[0] %></div></li>
+              <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            <% } else { %>
+              <li><a href="/signup"><span class="glyphicon glyphicon-pencil"></span> Sign up</a></li>
+              <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <% if (page === '/my-post-wall') { %>
+      <h1><span class="fa fa-magnet"></span> My Magnets</h1>
+    <% } %>
+    <% if (page === '/all-post-wall') { %>
+      <h1><span class="fa fa-magnet"></span><span class="fa fa-magnet"></span> All Magnets</h1>
+    <% } %>
+    <hr>
+    <script>
+      var id = <%- JSON.stringify(id) %>
+      var page = <%- JSON.stringify(page) %>
+    </script>
+    <div id="target"></div>
+    <script type="text/javascript" src="/public/build/build.js"></script>
+  </body>
+</html>

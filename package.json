@@ -1,0 +1,53 @@
+{
+  "name": "magnet-izer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "engines": {
+    "npm": "3.10.10",
+    "node": "6.11.1"
+  },
+  "scripts": {
+    "start": "nodemon src/server.js",
+    "sass": "node-sass -w src/public/sass/ -o src/public/css/"
+  },
+  "author": "Simon Cooper",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.17.2",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^4.0.0",
+    "ejs": "^2.5.7",
+    "express": "^4.15.3",
+    "express-session": "^1.15.5",
+    "mongoose": "^4.11.5",
+    "morgan": "^1.8.2",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "passport-twitter": "^1.0.4"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "babelify": "^7.3.0",
+    "browserify": "^14.4.0",
+    "chalk": "^2.1.0",
+    "gulp": "^3.9.1",
+    "gulp-duration": "0.0.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-notify": "^3.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-uglify": "^3.0.0",
+    "gulp-util": "^3.0.8",
+    "masonry-layout": "^4.2.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-masonry-component": "^5.0.7",
+    "utils-merge": "^1.0.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.9.0"
+  }
+}
