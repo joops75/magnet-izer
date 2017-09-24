@@ -28964,9 +28964,10 @@ var DisplayWall = function (_React$Component) {
     _this.state = {
       users: []
     };
-    _this.delete = _this.delete.bind(_this);
     _this.popup = _this.popup.bind(_this);
     _this.input = _this.input.bind(_this);
+    _this.delete = _this.delete.bind(_this);
+    _this.error = _this.error.bind(_this);
     _this.addEdit = _this.addEdit.bind(_this);
     _this.likeDislike = _this.likeDislike.bind(_this);
     return _this;
@@ -29002,9 +29003,6 @@ var DisplayWall = function (_React$Component) {
       msnry = new Layout(grid, {
         columnWidth: 240, // = img width + 2 * (magnet padding + border width) (set in sass file)
         itemSelector: '.magnet'
-      });
-      $('img').one('error', function () {
-        this.src = '/public/images/NoImageAvailable.png';
       });
       if (page === '/my-post-wall') {
         msnry.stamp(document.querySelector('.stamp'));
@@ -29096,11 +29094,16 @@ var DisplayWall = function (_React$Component) {
             magnet.userMagnetIndex = magnetCount;
             var newDomElementString = _server2.default.renderToStaticMarkup(React.createElement(Magnet, { key: magnetCount, magnet: magnet, i: magnetCount }));
             var newDomElement = $.parseHTML(newDomElementString)[0];
+            // newDomElement.firstChild.addEventListener("error", this.error)
             var fragment = document.createDocumentFragment();
             fragment.appendChild(newDomElement);
             grid.appendChild(fragment);
             msnry.appended(newDomElement);
             // need to add event listeners manually as renderToStaticMarkup removes them
+            var image = document.querySelector('#image_' + magnetCount);
+            setTimeout(function () {
+              image.addEventListener("error", _this4.error);
+            }, 100); // delayed add to avoid instant error triggering
             var deleteButton = document.querySelector('#delete_' + magnetCount);
             deleteButton.addEventListener("click", _this4.delete);
             var editButton = document.querySelector('#edit_' + 0 + '_' + magnetCount + '_' + magnetCount);
@@ -29114,6 +29117,16 @@ var DisplayWall = function (_React$Component) {
           }
         });
       }
+    }
+  }, {
+    key: 'error',
+    value: function error(e) {
+      var magnetIndex = e.target.id.split('_')[1];
+      document.querySelector('#image_' + magnetIndex).removeEventListener("error", this.error);
+      document.querySelector('#image_' + magnetIndex).src = '/public/images/NoImageAvailable.png';
+      setTimeout(function () {
+        msnry.reloadItems();msnry.layout();
+      }, 100); // delayed layout() otherwise magnets won't rearrange
     }
   }, {
     key: 'edit',
@@ -29149,7 +29162,13 @@ var DisplayWall = function (_React$Component) {
               var childNode = magnetNode.childNodes[i];
               var newChildNode = document.createElement(childNode.nodeName);
               var text = _this5.trim(document.querySelector('#form_' + i).value, '#form_' + i);
-              childNode.nodeName === 'IMG' ? newChildNode.src = text : newChildNode.textContent = text;
+              if (childNode.nodeName === 'IMG') {
+                newChildNode.id = 'image_' + magnetIndex;
+                newChildNode.src = text;
+                newChildNode.addEventListener("error", _this5.error);
+              } else {
+                newChildNode.textContent = text;
+              }
               magnetNode.replaceChild(newChildNode, childNode);
               document.querySelector('#form_' + i).value = '';
             }
@@ -29275,7 +29294,7 @@ var DisplayWall = function (_React$Component) {
         React.createElement(
           'div',
           { id: 'magnets' },
-          React.createElement(Magnets, { magnets: magnets, 'delete': this.delete, popup: this.popup, likeDislike: this.likeDislike })
+          React.createElement(Magnets, { magnets: magnets, 'delete': this.delete, popup: this.popup, error: this.error, likeDislike: this.likeDislike })
         )
       );
     }
@@ -29288,7 +29307,7 @@ var Magnets = function Magnets(props) {
   var addTile = React.createElement(AddTile, null);
   var childElements = props.magnets.map(function (magnet, i) {
     magnetCount = i * 1;
-    return React.createElement(Magnet, { key: i, magnet: magnet, i: i, 'delete': props.delete, popup: props.popup, likeDislike: props.likeDislike });
+    return React.createElement(Magnet, { key: i, magnet: magnet, i: i, 'delete': props.delete, popup: props.popup, error: props.error, likeDislike: props.likeDislike });
   });
   return React.createElement(
     Masonry,
@@ -29311,7 +29330,7 @@ var Magnet = function Magnet(props) {
   return React.createElement(
     'div',
     { id: 'magnet_' + props.i, className: 'magnet' },
-    React.createElement('img', { src: props.magnet.url }),
+    React.createElement('img', { id: 'image_' + props.i, src: props.magnet.url, onError: props.error }),
     React.createElement(
       'h3',
       null,

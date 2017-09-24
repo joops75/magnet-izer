@@ -25,9 +25,10 @@ class DisplayWall extends React.Component {
     this.state = {
       users: []
     }
-    this.delete = this.delete.bind(this)
     this.popup = this.popup.bind(this)
     this.input = this.input.bind(this)
+    this.delete = this.delete.bind(this)
+    this.error = this.error.bind(this)
     this.addEdit = this.addEdit.bind(this)
     this.likeDislike = this.likeDislike.bind(this)
   }
@@ -50,7 +51,6 @@ class DisplayWall extends React.Component {
       columnWidth: 240, // = img width + 2 * (magnet padding + border width) (set in sass file)
       itemSelector: '.magnet'
     })
-    $('img').one('error', function() { this.src = '/public/images/NoImageAvailable.png'; })
     if (page === '/my-post-wall') {
       msnry.stamp(document.querySelector('.stamp'))
       var popupButton = document.querySelector('#popupButton')
@@ -131,11 +131,14 @@ class DisplayWall extends React.Component {
           magnet.userMagnetIndex = magnetCount
           var newDomElementString = ReactDOMServer.renderToStaticMarkup(<Magnet key={magnetCount} magnet={magnet} i={magnetCount} />)
           var newDomElement = $.parseHTML(newDomElementString)[0]
+          // newDomElement.firstChild.addEventListener("error", this.error)
           var fragment = document.createDocumentFragment()
           fragment.appendChild(newDomElement)
           grid.appendChild(fragment)
           msnry.appended(newDomElement)
           // need to add event listeners manually as renderToStaticMarkup removes them
+          var image = document.querySelector('#image_' + magnetCount)
+          setTimeout(() => { image.addEventListener("error", this.error) }, 100) // delayed add to avoid instant error triggering
           var deleteButton = document.querySelector('#delete_' + magnetCount)
           deleteButton.addEventListener("click", this.delete)
           var editButton = document.querySelector('#edit_' + 0 + '_' + magnetCount + '_' + magnetCount)
@@ -149,6 +152,12 @@ class DisplayWall extends React.Component {
         }
       })
     }
+  }
+  error(e) {
+    var magnetIndex = e.target.id.split('_')[1]
+    document.querySelector('#image_' + magnetIndex).removeEventListener("error", this.error)
+    document.querySelector('#image_' + magnetIndex).src = '/public/images/NoImageAvailable.png'
+    setTimeout(() => { msnry.reloadItems(); msnry.layout() }, 100) // delayed layout() otherwise magnets won't rearrange
   }
   edit() {
     var url = document.querySelector('#form_0').value
@@ -180,7 +189,13 @@ class DisplayWall extends React.Component {
             var childNode = magnetNode.childNodes[i]
             var newChildNode = document.createElement(childNode.nodeName)
             var text = this.trim(document.querySelector('#form_' + i).value, '#form_' + i)
-            childNode.nodeName === 'IMG' ? newChildNode.src = text : newChildNode.textContent = text
+            if (childNode.nodeName === 'IMG') {
+              newChildNode.id = 'image_' + magnetIndex
+              newChildNode.src = text
+              newChildNode.addEventListener("error", this.error)
+            } else {
+              newChildNode.textContent = text
+            }
             magnetNode.replaceChild(newChildNode, childNode)
             document.querySelector('#form_' + i).value = ''
           }
@@ -288,7 +303,7 @@ class DisplayWall extends React.Component {
           <Form popup={this.popup} addEdit={this.addEdit} input={this.input} />
         </div>
         <div id="magnets">
-          <Magnets magnets={magnets} delete={this.delete} popup={this.popup} likeDislike={this.likeDislike} />
+          <Magnets magnets={magnets} delete={this.delete} popup={this.popup} error={this.error} likeDislike={this.likeDislike} />
         </div>
       </div>
     )
@@ -300,7 +315,7 @@ var Magnets = function(props) {
   var childElements = props.magnets.map(function(magnet, i){
     magnetCount = i * 1
     return (
-      <Magnet key={i} magnet={magnet} i={i} delete={props.delete} popup={props.popup} likeDislike={props.likeDislike} />
+      <Magnet key={i} magnet={magnet} i={i} delete={props.delete} popup={props.popup} error={props.error} likeDislike={props.likeDislike} />
     )
   })
   return (
@@ -323,7 +338,7 @@ var Magnet = function(props) {
   if (!props.magnet.dislikes) props.magnet.dislikes = []
   return (
     <div id={'magnet_' + props.i} className="magnet">
-      <img src={props.magnet.url} />
+      <img id={'image_' + props.i} src={props.magnet.url} onError={props.error} />
       <h3>{props.magnet.title}</h3>
       <p>{props.magnet.comment}</p>
       <p>by: {props.magnet.poster[0]} ({props.magnet.poster[1]})</p>

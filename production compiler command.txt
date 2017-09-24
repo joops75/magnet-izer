@@ -1,0 +1,12 @@
+// source: https://facebook.github.io/react/docs/optimizing-performance.html#browserify
+// npm install --save-dev bundle-collapser envify uglify-js uglifyify
+// paste the following into Git Bash to compile react build file for production
+
+browserify ./src/public/build/build.js \
+  -g [ envify --NODE_ENV production ] \
+  -g uglifyify \
+  -p bundle-collapser/plugin \
+  | uglifyjs --compress --mangle > ./src/public/build/bundle.js
+
+// if module 'missing', install globally (npm install -save -g [module])
+// then use the produced bundle.js file in scripts in place of build.js
