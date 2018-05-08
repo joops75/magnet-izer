@@ -18,6 +18,12 @@ display based on the current page url and user data. When adding a magnet, a pop
 the image url, title and optional comment. Broken images are handled via the 'onerror' function, which replaces them with a
 'No Image available' alternative. A user may edit or delete an existing magnet via 'My Magnets'.
 
+When editing a magnet, likes and dislikes are reset since it may be changed completely and therefore this data is made 
+unrepresentative. The user's database id is stored in the likes/dislikes arrays of a magnet's data when 
+liking/disliking. If a user has already liked/disliked a magnet, then repeating the same action will have no effect. 
+Performing the opposite action transfers their database id from one array to the other. To the user, this appears as the 
+like or dislike count increasing by one while the other decreases by one.
+
 Currently all magnets are displayed from the database. Ideally, the returned results should be limited and pagination 
 functionality added.
 
